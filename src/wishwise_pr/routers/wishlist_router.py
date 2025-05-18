@@ -1,0 +1,69 @@
+from typing import List
+from fastapi import APIRouter, Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
+from wishwise_pr.configs.database.engine import get_db_connection
+from wishwise_pr.services.wishlist_service import WishlistService
+from wishwise_pr.schemas.wishlist_schema import WishlistCreateSchema, WishlistPublicSchema, WishlistUpdateSchema
+
+WishlistRouter = APIRouter(prefix="/wishlists", tags=["wishlist"])
+
+
+def get_wishlist_service(session: AsyncSession = Depends(get_db_connection)) -> WishlistService:
+    return WishlistService(session)
+
+
+@WishlistRouter.post("/", response_model=WishlistPublicSchema)
+async def create_wishlist(
+    body: WishlistCreateSchema,
+    user_id: int,  # пока так, без авторизации
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.create(user_id=user_id, title=body.title, slug=body.slug)
+
+
+@WishlistRouter.get("/my", response_model=List[WishlistPublicSchema])
+async def get_user_wishlists(
+    user_id: int,
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.get_user_lists(user_id)
+
+
+@WishlistRouter.get("/{slug}", response_model=WishlistPublicSchema)
+async def get_by_slug(
+    slug: str,
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.get_by_slug(slug)
+
+
+@WishlistRouter.get("/{id}", response_model=WishlistPublicSchema)
+async def get_by_id(
+    id: int,
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.get(id)
+
+
+@WishlistRouter.get("/", response_model=List[WishlistPublicSchema])
+async def list_all(
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.list()
+
+@WishlistRouter.patch("/{id}", response_model=WishlistPublicSchema)
+async def update_wishlist(
+    id: int,
+    body: WishlistUpdateSchema,
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    return await service.update(id, body)
+
+
+@WishlistRouter.delete("/{id}")
+async def delete_wishlist(
+    id: int,
+    service: WishlistService = Depends(get_wishlist_service),
+):
+    await service.delete(id)
+    return {"message": "Wishlist deleted"}
