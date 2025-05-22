@@ -13,16 +13,24 @@ def get_wishlist_service(session: AsyncSession = Depends(get_db_connection)) -> 
     return WishlistService(WishlistRepository(session))
 
 
-@WishlistRouter.post("/", response_model=WishlistPublicSchema)
+@WishlistRouter.post(
+    "/",
+    response_model=WishlistPublicSchema,
+    description="Создать новый вишлист для пользователя"
+)
 async def create_wishlist(
     body: WishlistCreateSchema,
-    user_id: int,  # пока так, без авторизации
+    user_id: int,
     service: WishlistService = Depends(get_wishlist_service),
 ):
     return await service.create(user_id=user_id, title=body.title, slug=body.slug)
 
 
-@WishlistRouter.get("/my", response_model=List[WishlistPublicSchema])
+@WishlistRouter.get(
+    "/my",
+    response_model=List[WishlistPublicSchema],
+    description="Получить список вишлистов текущего пользователя"
+)
 async def get_user_wishlists(
     user_id: int,
     service: WishlistService = Depends(get_wishlist_service),
@@ -30,7 +38,11 @@ async def get_user_wishlists(
     return await service.get_user_lists(user_id)
 
 
-@WishlistRouter.get("/{slug}", response_model=WishlistPublicSchema)
+@WishlistRouter.get(
+    "/{slug}",
+    response_model=WishlistPublicSchema,
+    description="Получить вишлист по его уникальному slug"
+)
 async def get_by_slug(
     slug: str,
     service: WishlistService = Depends(get_wishlist_service),
@@ -38,7 +50,11 @@ async def get_by_slug(
     return await service.get_by_slug(slug)
 
 
-@WishlistRouter.get("/{id}", response_model=WishlistPublicSchema)
+@WishlistRouter.get(
+    "/{id}",
+    response_model=WishlistPublicSchema,
+    description="Получить вишлист по его ID"
+)
 async def get_by_id(
     id: int,
     service: WishlistService = Depends(get_wishlist_service),
@@ -46,13 +62,22 @@ async def get_by_id(
     return await service.get(id)
 
 
-@WishlistRouter.get("/", response_model=List[WishlistPublicSchema])
+@WishlistRouter.get(
+    "/",
+    response_model=List[WishlistPublicSchema],
+    description="Получить список всех вишлистов"
+)
 async def list_all(
     service: WishlistService = Depends(get_wishlist_service),
 ):
     return await service.list()
 
-@WishlistRouter.patch("/{id}", response_model=WishlistPublicSchema)
+
+@WishlistRouter.patch(
+    "/{id}",
+    response_model=WishlistPublicSchema,
+    description="Обновить вишлист по его ID"
+)
 async def update_wishlist(
     id: int,
     body: WishlistUpdateSchema,
@@ -61,10 +86,13 @@ async def update_wishlist(
     return await service.update(id, body)
 
 
-@WishlistRouter.delete("/{id}")
+@WishlistRouter.delete(
+    "/{id}",
+    description="Удалить вишлист по его ID"
+)
 async def delete_wishlist(
     id: int,
     service: WishlistService = Depends(get_wishlist_service),
 ):
     await service.delete(id)
-    return {"message": "Wishlist deleted"}
+    return {"message": "Wishlist удалён"}

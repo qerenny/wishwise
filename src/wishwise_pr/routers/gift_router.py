@@ -15,9 +15,11 @@ def get_gift_service(session: AsyncSession = Depends(get_db_connection)) -> Gift
     reservation_repo = ReservationRepository(session)
     return GiftService(gift_repo, reservation_repo)
 
-
-
-@GiftRouter.post("/{wishlist_id}", response_model=GiftPublicSchema)
+@GiftRouter.post(
+    "/{wishlist_id}",
+    response_model=GiftPublicSchema,
+    description="Добавить подарок в вишлист по его ID"
+)
 async def add_gift(
     wishlist_id: int,
     body: GiftCreateSchema,
@@ -25,7 +27,12 @@ async def add_gift(
 ):
     return await service.add_gift(wishlist_id=wishlist_id, title=body.title, url=body.url)
 
-@GiftRouter.get("/gift/{id}", response_model=GiftPublicSchema)
+
+@GiftRouter.get(
+    "/gift/{id}",
+    response_model=GiftPublicSchema,
+    description="Получить подарок по его ID"
+)
 async def get_gift(
     id: int,
     service: GiftService = Depends(get_gift_service),
@@ -33,14 +40,22 @@ async def get_gift(
     return await service.get(id)
 
 
-@GiftRouter.get("/", response_model=List[GiftPublicSchema])
+@GiftRouter.get(
+    "/",
+    response_model=List[GiftPublicSchema],
+    description="Получить список всех подарков"
+)
 async def list_all_gifts(
     service: GiftService = Depends(get_gift_service),
 ):
     return await service.list()
 
 
-@GiftRouter.get("/{wishlist_id}", response_model=List[GiftPublicSchema])
+@GiftRouter.get(
+    "/{wishlist_id}",
+    response_model=List[GiftPublicSchema],
+    description="Получить список подарков в вишлисте по его ID"
+)
 async def get_gifts(
     wishlist_id: int,
     service: GiftService = Depends(get_gift_service),
@@ -48,7 +63,11 @@ async def get_gifts(
     return await service.get_by_wishlist(wishlist_id)
 
 
-@GiftRouter.patch("/{id}", response_model=GiftPublicSchema)
+@GiftRouter.patch(
+    "/{id}",
+    response_model=GiftPublicSchema,
+    description="Обновить данные подарка по его ID"
+)
 async def update_gift(
     id: int,
     body: GiftUpdateSchema,
@@ -56,7 +75,11 @@ async def update_gift(
 ):
     return await service.update(id, body)
 
-@GiftRouter.delete("/{gift_id}")
+
+@GiftRouter.delete(
+    "/{gift_id}",
+    description="Удалить подарок по его ID"
+)
 async def delete_gift(
     gift_id: int,
     service: GiftService = Depends(get_gift_service),

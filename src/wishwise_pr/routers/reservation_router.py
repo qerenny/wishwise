@@ -12,7 +12,11 @@ ReservationRouter = APIRouter(prefix="/reservations", tags=["reservation"])
 def get_reservation_service(session: AsyncSession = Depends(get_db_connection)) -> ReservationService:
     return ReservationService(ReservationRepository(session))
 
-@ReservationRouter.get("/gift/{gift_id}", response_model=ReservationPublicSchema)
+@ReservationRouter.get(
+    "/gift/{gift_id}",
+    response_model=ReservationPublicSchema,
+    description="Получить информацию о бронировании по ID подарка"
+)
 async def get_by_gift_id(
     gift_id: int,
     service: ReservationService = Depends(get_reservation_service),
@@ -20,14 +24,22 @@ async def get_by_gift_id(
     return await service.get_by_gift(gift_id)
 
 
-@ReservationRouter.get("/", response_model=List[ReservationPublicSchema])
+@ReservationRouter.get(
+    "/",
+    response_model=List[ReservationPublicSchema],
+    description="Получить список всех бронирований"
+)
 async def list_reservations(
     service: ReservationService = Depends(get_reservation_service),
 ):
     return await service.list()
 
 
-@ReservationRouter.post("/reserve/{gift_id}", response_model=ReservationPublicSchema)
+@ReservationRouter.post(
+    "/reserve/{gift_id}",
+    response_model=ReservationPublicSchema,
+    description="Забронировать подарок по его ID"
+)
 async def reserve_gift(
     gift_id: int,
     body: ReservationCreateSchema,
@@ -36,16 +48,24 @@ async def reserve_gift(
     return await service.reserve(gift_id=gift_id, name=body.name, email=body.email)
 
 
-@ReservationRouter.post("/cancel/{gift_id}")
+@ReservationRouter.post(
+    "/cancel/{gift_id}",
+    description="Отменить бронирование подарка по его ID"
+)
 async def cancel_reservation(
     gift_id: int,
     email: str,
     service: ReservationService = Depends(get_reservation_service),
 ):
     await service.cancel(gift_id=gift_id, email=email)
-    return {"message": "Reservation cancelled"}
+    return {"message": "Бронирование отменено"}
 
-@ReservationRouter.patch("/{id}", response_model=ReservationPublicSchema)
+
+@ReservationRouter.patch(
+    "/{id}",
+    response_model=ReservationPublicSchema,
+    description="Обновить данные бронирования по его ID"
+)
 async def update_reservation(
     id: int,
     body: ReservationUpdateSchema,
@@ -53,10 +73,14 @@ async def update_reservation(
 ):
     return await service.update(id, body)
 
-@ReservationRouter.delete("/{id}")
+
+@ReservationRouter.delete(
+    "/{id}",
+    description="Удалить бронирование по его ID"
+)
 async def delete_reservation(
     id: int,
     service: ReservationService = Depends(get_reservation_service),
 ):
     await service.delete(id)
-    return {"message": "Reservation deleted"}
+    return {"message": "Бронирование удалено"}
