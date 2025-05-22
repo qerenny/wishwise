@@ -1,11 +1,13 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from wishwise_pr.models.reservation import Reservation
 from wishwise_pr.repositories.reservation_repository import ReservationRepository
+from wishwise_pr.services.base_service import BaseService
 
 
-class ReservationService:
-    def __init__(self, session: AsyncSession):
-        self.repo = ReservationRepository(session)
+class ReservationService(BaseService[Reservation]):
+    def __init__(self, repository: ReservationRepository):
+        super().__init__(repository)
+        self.repo: ReservationRepository = repository
 
     async def reserve(self, gift_id: int, name: str, email: str | None = None) -> Reservation:
         existing = await self.repo.get_by_gift_id(gift_id)

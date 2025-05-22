@@ -15,8 +15,9 @@ class GiftPublicSchema(BaseModel):
     url: Optional[str]
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class GiftUpdateSchema(BaseModel):
     title: Optional[str] = None

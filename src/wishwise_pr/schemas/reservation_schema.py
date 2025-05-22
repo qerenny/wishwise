@@ -16,9 +16,9 @@ class ReservationPublicSchema(BaseModel):
     created_at: datetime
     confirmed: bool
 
-    class Config:
-        orm_mode = True
-
+    model_config = {
+        "from_attributes": True
+    }
 class ReservationUpdateSchema(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None

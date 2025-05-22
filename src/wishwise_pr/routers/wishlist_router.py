@@ -4,12 +4,13 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from wishwise_pr.configs.database.engine import get_db_connection
 from wishwise_pr.services.wishlist_service import WishlistService
 from wishwise_pr.schemas.wishlist_schema import WishlistCreateSchema, WishlistPublicSchema, WishlistUpdateSchema
+from wishwise_pr.repositories.wishlist_repository import WishlistRepository
 
 WishlistRouter = APIRouter(prefix="/wishlists", tags=["wishlist"])
 
 
 def get_wishlist_service(session: AsyncSession = Depends(get_db_connection)) -> WishlistService:
-    return WishlistService(session)
+    return WishlistService(WishlistRepository(session))
 
 
 @WishlistRouter.post("/", response_model=WishlistPublicSchema)

@@ -4,12 +4,13 @@ from wishwise_pr.configs.database.engine import get_db_connection
 from wishwise_pr.services.reservation_service import ReservationService
 from wishwise_pr.schemas.reservation_schema import ReservationCreateSchema, ReservationPublicSchema, ReservationUpdateSchema
 from typing import List
+from wishwise_pr.repositories.reservation_repository import ReservationRepository
 
 ReservationRouter = APIRouter(prefix="/reservations", tags=["reservation"])
 
 
 def get_reservation_service(session: AsyncSession = Depends(get_db_connection)) -> ReservationService:
-    return ReservationService(session)
+    return ReservationService(ReservationRepository(session))
 
 @ReservationRouter.get("/gift/{gift_id}", response_model=ReservationPublicSchema)
 async def get_by_gift_id(

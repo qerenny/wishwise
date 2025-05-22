@@ -5,12 +5,13 @@ from wishwise_pr.configs.database.engine import get_db_connection
 from wishwise_pr.services.user_service import UserService
 from wishwise_pr.schemas.user_schema import UserRegistrationSchema, UserLoginSchema, UserUpdateSchema, UserPublicSchema
 from wishwise_pr.models.user import User
+from wishwise_pr.repositories.user_repository import UserRepository
 
 UserRouter = APIRouter(prefix="/users", tags=["user"])
 
 
 def get_user_service(session: AsyncSession = Depends(get_db_connection)) -> UserService:
-    return UserService(session)
+    return UserService(UserRepository(session))
 
 
 @UserRouter.post("/registration")
@@ -29,7 +30,7 @@ async def login(
     return await service.login(body)
 
 
-@UserRouter.get("/get-all", response_model=List[User])
+@UserRouter.get("/", response_model=List[User])
 async def get_all(
     service: UserService = Depends(get_user_service),
 ):
