@@ -5,6 +5,8 @@ from wishwise_pr.configs.database.engine import get_db_connection
 from wishwise_pr.services.wishlist_service import WishlistService
 from wishwise_pr.schemas.wishlist_schema import WishlistCreateSchema, WishlistPublicSchema, WishlistUpdateSchema
 from wishwise_pr.repositories.wishlist_repository import WishlistRepository
+from wishwise_pr.utils.auth import get_current_user_id
+
 
 WishlistRouter = APIRouter(prefix="/wishlists", tags=["wishlist"])
 
@@ -32,10 +34,11 @@ async def create_wishlist(
     description="Получить список вишлистов текущего пользователя"
 )
 async def get_user_wishlists(
-    user_id: int,
+    user_id: int = Depends(get_current_user_id),
     service: WishlistService = Depends(get_wishlist_service),
 ):
     return await service.get_user_lists(user_id)
+
 
 
 @WishlistRouter.get(
