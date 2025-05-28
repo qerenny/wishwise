@@ -11,14 +11,21 @@ from fastapi.openapi.models import SecuritySchemeType
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
+=======
+
+
+env = get_environment_variables()
+
+
 app = FastAPI(
     title="WishWise Backend API",
     version="1.0.0",
 )
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],  # или ["*"] для разработки
+    allow_origins=["*"],  # или ["*"] для всех
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
