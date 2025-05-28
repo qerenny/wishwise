@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchWishlists, createWishlist } from "../api";
-import { addGift, deleteGift } from "../api"; // Подключаем функции работы с подарками
-
+import { addGift, deleteGift } from "../api";
 const Wishlists = () => {
     const [wishlists, setWishlists] = useState([]);
     const [newWishlist, setNewWishlist] = useState("");

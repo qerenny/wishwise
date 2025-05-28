@@ -11,9 +11,6 @@ from fastapi.openapi.models import SecuritySchemeType
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
-=======
-
-
 env = get_environment_variables()
 
 
@@ -22,10 +19,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
+origins = ['http://localhost:5173']
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # или ["*"] для всех
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
