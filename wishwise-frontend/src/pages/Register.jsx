@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-
 function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -9,26 +8,37 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    try {
-      const response = await axios.post("http://localhost:8000/users/registration", {
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/users/registration",
+      {
         email,
-        username:"ul",
+        username,
         password,
-      });
-      console.log("Данные для регистрации:", { email, username, password });
+      },
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Регистрация успешна:", response.data);
+    setSuccess("Регистрация успешна!");
+  } catch (err) {
+    console.error("Ошибка регистрации:", err?.response || err);
+    setError("Ошибка регистрации. Проверьте введённые данные.");
+  }
+};
 
 
-      setSuccess("Регистрация успешна!");
-    } catch (err) {
-      setError("Ошибка регистрации. Проверьте введённые данные.");
-    }
-  };
+
 
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
@@ -60,7 +70,10 @@ function Register() {
           required
           style={{ display: "block", marginBottom: "10px", padding: "10px", width: "100%" }}
         />
-        <button type="submit" style={{ padding: "10px 20px", backgroundColor: "#007BFF", color: "white", border: "none", cursor: "pointer" }}>
+        <button
+          type="submit"
+          style={{ padding: "10px 20px", backgroundColor: "#007BFF", color: "white", border: "none", cursor: "pointer" }}
+        >
           Зарегистрироваться
         </button>
       </form>

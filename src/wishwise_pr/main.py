@@ -11,13 +11,18 @@ from fastapi.openapi.models import SecuritySchemeType
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
+=======
+
 
 env = get_environment_variables()
+
 
 app = FastAPI(
     title="WishWise Backend API",
     version="1.0.0",
 )
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # или ["*"] для всех
@@ -25,6 +30,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(UserRouter)
 app.include_router(GiftRouter)
 app.include_router(WishlistRouter)
@@ -55,4 +61,3 @@ async def custom_openapi():
 @app.on_event("startup")
 async def on_startup():
     await init_models()
-# init()
