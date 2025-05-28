@@ -5,20 +5,26 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Очистить ошибки перед новым запросом
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await axios.post("https://your-api-url/users/login", {
+      const response = await axios.post("http://localhost:8000/users/login", {
         email,
         password,
       });
 
-      console.log("Успешный вход:", response.data);
-      // Здесь можно сохранить токен и перенаправить пользователя
+      const token = response.data.access_token;
+      localStorage.setItem("token", token);
+      console.log("Успешный вход, токен:", token);
+      setSuccess("Вход выполнен успешно!");
+
     } catch (err) {
+      console.error(err);
       setError("Ошибка входа. Проверьте email и пароль.");
     }
   };
@@ -27,6 +33,7 @@ function Login() {
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h2>Вход</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
       <form onSubmit={handleSubmit} style={{ maxWidth: "300px", margin: "auto" }}>
         <input
           type="email"
@@ -44,7 +51,10 @@ function Login() {
           required
           style={{ display: "block", marginBottom: "10px", padding: "10px", width: "100%" }}
         />
-        <button type="submit" style={{ padding: "10px 20px", backgroundColor: "#007BFF", color: "white", border: "none", cursor: "pointer" }}>
+        <button
+          type="submit"
+          style={{ padding: "10px 20px", backgroundColor: "#28A745", color: "white", border: "none", cursor: "pointer" }}
+        >
           Войти
         </button>
       </form>
@@ -53,4 +63,3 @@ function Login() {
 }
 
 export default Login;
-
