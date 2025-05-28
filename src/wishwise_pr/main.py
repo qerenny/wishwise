@@ -9,6 +9,7 @@ from wishwise_pr.routers.wishlist_router import WishlistRouter
 from wishwise_pr.routers.reservation_router import ReservationRouter
 from fastapi.openapi.models import SecuritySchemeType
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 
 
 env = get_environment_variables()
@@ -17,7 +18,13 @@ app = FastAPI(
     title="WishWise Backend API",
     version="1.0.0",
 )
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # или ["*"] для всех
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(UserRouter)
 app.include_router(GiftRouter)
 app.include_router(WishlistRouter)
