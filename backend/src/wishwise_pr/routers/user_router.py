@@ -29,11 +29,14 @@ async def registration(
     "/login",
     description="Вход пользователя в систему"
 )
+@UserRouter.post("/login")
 async def login(
     body: UserLoginSchema,
     service: UserService = Depends(get_user_service),
 ):
-    return await service.login(body)
+    token = await service.login(body)
+    return {"access_token": token, "token_type": "bearer"}
+
 
 
 @UserRouter.get(

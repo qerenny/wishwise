@@ -1,8 +1,14 @@
 .PHONY: dev lint format migrate upgrade
 
 # Запуск FastAPI сервера
-dev:
+back-dev:
 	poetry run uvicorn wishwise_pr.main:app --reload
+
+front-install:
+	pnpm install
+
+front-dev:
+	pnpm run dev
 
 # Применить все миграции
 upgrade:
