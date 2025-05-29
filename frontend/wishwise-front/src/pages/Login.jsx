@@ -6,6 +6,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ function Login() {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:8000/users/login", {
+      const response = await axios.post(`${API_BASE_URL}/users/login`, {
         email,
         password,
       });

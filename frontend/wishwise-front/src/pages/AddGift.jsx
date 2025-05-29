@@ -6,6 +6,7 @@ function AddGift({ wishlistId }) {
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ function AddGift({ wishlistId }) {
     setSuccess("");
 
     try {
-      await axios.post(`http://localhost:8000/wishlists/${wishlistId}/gifts`, {
+      await axios.post(`${API_BASE_URL}/${wishlistId}/gifts`, {
         title,
         description,
       });
