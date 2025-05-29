@@ -13,7 +13,7 @@ class GiftService(BaseService[Gift]):
         self.reservation_repo: ReservationRepository = reservation_repository
 
     async def add_gift(self, wishlist_id: int, title: str, url: str | None = None) -> Gift:
-        gift = Gift(wishlist_id=wishlist_id, title=title, url=url)
+        gift = Gift(wishlist_id=wishlist_id, title=title, url=str(url) if url is not None else None)
         return await self.repo.create(gift)
 
     async def get_by_wishlist(self, wishlist_id: int) -> List[Gift]:

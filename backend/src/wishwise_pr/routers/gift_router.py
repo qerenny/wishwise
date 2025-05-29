@@ -25,7 +25,11 @@ async def add_gift(
     body: GiftCreateSchema,
     service: GiftService = Depends(get_gift_service),
 ):
-    return await service.add_gift(wishlist_id=wishlist_id, title=body.title, url=body.url)
+    return await service.add_gift(
+    wishlist_id=wishlist_id,
+    title=body.title,
+    url=str(body.url) if body.url is not None else None  
+)
 
 
 @GiftRouter.get(
