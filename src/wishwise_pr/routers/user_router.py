@@ -33,8 +33,7 @@ async def login(
     body: UserLoginSchema,
     service: UserService = Depends(get_user_service),
 ):
-    token = await service.login(body)
-    return {"access_token": token, "token_type": "bearer"}
+    return await service.login(body)
 
 
 @UserRouter.get(
